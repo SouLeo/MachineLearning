@@ -14,20 +14,26 @@ function [m, V] = hw1FindEigendigits(A)
     [x,k] = size(A);
     
     % Mean column vector of A
-    m = mean(A,2);
+    m = uint8(mean(A,2));
     
     % Subtract mean column vector from A's columns
-    for i = 1:x
+    % ToDo: Explanation for why??
+    for i = 1:k
        % subtract mean column vector from covar matrix
        A(:,i) = A(:,i) - m;
     end
-    
-    % Start finding eigen properities
+    A = double(A);
+    % Find eigen properities
     covar_subspace = A'*A;
     [eig_vec_sub, eig_val_sub] = eig(covar_subspace);
-    % TODO: sort eigen vectors by eigen value
+    
+    % Sort eigen val in descending order
+    eig_val_sub_vec = diag(eig_val_sub);
+    [~, indices] = sort(eig_val_sub_vec,'descend');
+
     V = zeros(x,k);
-    for i = 1:k
-       V(:,i) = norm(A*eig_vec_sub(i));
+    for i = 1:k 
+       V(:,i) = A*eig_vec_sub(:,indices(i));
     end
+    V = normc(V);
 end
