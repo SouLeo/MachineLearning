@@ -9,7 +9,7 @@
 % label is an integer that classifies what digit the test_img
 % represents
 
-function index = classify_image(A, test_img)
+function index = classify_image_for_cropped(A, test_img)
     [x,k] = size(A);
     
     % Mean column vector of A
@@ -31,13 +31,13 @@ function index = classify_image(A, test_img)
     eig_val_sub_vec = diag(eig_val_sub);
     [~, indices] = sort(eig_val_sub_vec,'descend');
 
-    V = zeros(k,k);
+    V_bleh = zeros(k,k);
     for i = 1:k 
-       V(:,i) = eig_vec_sub(:,indices(i));
+       V_bleh(:,i) = eig_vec_sub(:,indices(i));
     end
     %V = normc(V);
-
+    V_cropy = V_bleh(:,1:25);
     
-    index = knnsearch(V, test_img');
+    index = knnsearch(V_cropy, test_img');
     
 end

@@ -4,7 +4,7 @@ size_of_training_data = size(trainImages);
 % percents are normalized
 % for total_num_px in image (784 px) to be less than training data size (60000)
 % percent training data <= 0.01306
-percent_training_data_used = 0.002; 
+percent_training_data_used = 0.01215; 
 
 % reshapes the 4-d matrix of size (28, 28, 1, 60000) -> size (1, 784, 1, 60000)
 training_img_col = reshape(trainImages, 1, (size_of_training_data(1))^2, 1, size_of_training_data(4));
@@ -27,16 +27,47 @@ percent_test_data_used = 0.002;
 test_img_col = squeeze(reshape(testImages, 1, (size_of_test_data(1)^2), 1, size_of_test_data(4)));
 testing_cutoff = floor(percent_test_data_used*size_of_test_data(4));
 test_img_col = double(test_img_col(:,1:testing_cutoff));
+test_labels_col= double(testLabels(1:testing_cutoff))';
 
 guessed_labels = zeros(testing_cutoff, 1);
 
 for i = 1:testing_cutoff
     test_img_col(:,i) = test_img_col(:,i) - double(m);
     img_subspace = V'*test_img_col(:,i);
+    
+%     % Reconstruct Test Images
+%     reconstruct = V*img_subspace;
+%     reconstruct = reshape(reconstruct, 28, 28);
+%     imshow(reconstruct)
+    
     % knn search for closest classification?
     index = classify_image(A_covariance_mat,img_subspace);
     guessed_labels(i) = trainLabels(index); 
 end
-% testing eigenvectors 
-% test_img = 255*reshape(V(:,1),28,28);
-% imshow(test_img)
+
+% Determine Accuracy 
+accuracy(guessed_labels, test_labels_col) 
+
+% % Visualize eigenvectors 
+% figure('NumberTitle','off','Name', 'Top 4 Eigenvectors from Training Set Size: 600')
+% test_img_1 = 255*reshape(V(:,1),28,28);
+% subplot(2,2,1)
+% imshow(test_img_1)
+% title('First Eigenvector')
+% subplot(2,2,2)
+% test_img_2 = 255*reshape(V(:,2),28,28);
+% imshow(test_img_2)
+% title('Second Eigenvector')
+% subplot(2,2,3)
+% test_img_3 = 255*reshape(V(:,3),28,28);
+% imshow(test_img_3)
+% title('Third Eigenvector')
+% subplot(2,2,4)
+% test_img_4 = 255*reshape(V(:,4),28,28);
+% imshow(test_img_4)
+% title('Four Eigenvector')
+
+% % Reconstruct Test Images
+% reconstruct = V*img_subspace;
+% reconstruct = reshape(reconstruct, 28, 28);
+% imshow(reconstruct)
