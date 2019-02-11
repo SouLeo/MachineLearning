@@ -9,7 +9,7 @@
 % label is an integer that classifies what digit the test_img
 % represents
 
-function index = classify_image(A, test_img)
+function index = classify_image(A, test_img, f)
     [x,k] = size(A);
     
     % Mean column vector of A
@@ -37,6 +37,5 @@ function index = classify_image(A, test_img)
     end
     V = normc(V);
     
-    index = knnsearch(V, test_img');
-    
+    [index,~] = knnsearch(V, test_img','K',f,'Distance','euclidean');
 end

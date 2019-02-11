@@ -30,30 +30,40 @@ test_img_col = double(test_img_col(:,1:testing_cutoff));
 test_labels_col= double(testLabels(1:testing_cutoff))';
 
 guessed_labels = zeros(testing_cutoff, 1);
-
-k = 5;
-temp_labels = zeros(1,k);
-for i = 1:testing_cutoff
-    test_img_col(:,i) = test_img_col(:,i) - double(m);
-    img_subspace = V'*test_img_col(:,i);
-    
-%     % Reconstruct Test Images
-%     reconstruct = V*img_subspace;
-%     reconstruct = reshape(reconstruct, 28, 28);
-%     imshow(reconstruct)
-    
-    % knn search for closest classification?
-    index = classify_image(A_covariance_mat,img_subspace,k);
-    for j = 1:length(index)
-        temp_labels(j) = trainLabels(index(j));
+accuracy_vec = [];
+for k = 1:20
+    temp_labels = zeros(1,k);
+    for i = 1:testing_cutoff
+        test_img_col(:,i) = test_img_col(:,i) - double(m);
+        img_subspace = V'*test_img_col(:,i);
+        
+        %     % Reconstruct Test Images
+        %     reconstruct = V*img_subspace;
+        %     reconstruct = reshape(reconstruct, 28, 28);
+        %     imshow(reconstruct)
+        
+        % knn search for closest classification?
+        index = classify_image(A_covariance_mat,img_subspace,k);
+        for j = 1:length(index)
+            temp_labels(j) = trainLabels(index(j));
+        end
+        
+        %     guessed_labels(i) = trainLabels(index); % mode(temp_labels);
+        guessed_labels(i) = mode(temp_labels);
     end
- 
-%     guessed_labels(i) = trainLabels(index); % mode(temp_labels); 
-     guessed_labels(i) = mode(temp_labels); 
+    accuracy_vec = [accuracy_vec; accuracy(guessed_labels, test_labels_col)];
 end
-
 % Determine Accuracy 
 accuracy(guessed_labels, test_labels_col) 
+
+k = 1:20;
+
+scatter(k, accuracy_vec);
+ylim([0 1])
+title('Selection of K VS Testing Accuracy')
+xlabel('K Nearest Neighbors')
+ylabel('Accuracy')
+
 
 % % Visualize eigenvectors 
 % figure('NumberTitle','off','Name', 'Top 4 Eigenvectors from Training Set Size: 600')
