@@ -1,6 +1,8 @@
 HW2_Independent_Component_Analysis/__pycache__/
 HW2_Independent_Component_Analysis/venv/
 
+*.idea/
+
 *.swp
 
 *~
