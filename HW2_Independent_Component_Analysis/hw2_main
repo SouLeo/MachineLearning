@@ -1,0 +1,22 @@
+from scipy.io.wavfile import write
+import scipy.io as sio
+import numpy as np
+
+from generate_mixing_matrix import generate_mixing_matrix
+
+sound_mat = sio.loadmat('sounds.mat')
+
+unmixed_sounds = sound_mat['sounds']  # unmixed_sounds[0, :]
+
+# Generate original sound wav files
+
+# sio.wavfile.write('original_sound_0', 44100, unmixed_sounds[0, :])
+# sio.wavfile.write('original_sound_1', 44100, unmixed_sounds[1, :])
+# sio.wavfile.write('original_sound_2', 44100, unmixed_sounds[2, :])
+# sio.wavfile.write('original_sound_3', 44100, unmixed_sounds[3, :])
+# sio.wavfile.write('original_sound_4', 44100, unmixed_sounds[4, :])
+
+
+num_of_mixed_signals = 2
+mixing_matrix = generate_mixing_matrix(2)
+
