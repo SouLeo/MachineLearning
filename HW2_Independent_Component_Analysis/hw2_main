@@ -9,7 +9,6 @@ sound_mat = sio.loadmat('original_sound_data/sounds.mat')
 unmixed_sounds = sound_mat['sounds']  # unmixed_sounds[0, :]
 
 # Generate original sound wav files
-
 # sio.wavfile.write('original_sound_0', 44100, unmixed_sounds[0, :])
 # sio.wavfile.write('original_sound_1', 44100, unmixed_sounds[1, :])
 # sio.wavfile.write('original_sound_2', 44100, unmixed_sounds[2, :])
@@ -23,6 +22,12 @@ num_of_mixed_signals = 1
 
 mixing_matrix = generate_mixing_matrix(num_of_mixed_signals, num_of_source_signals)
 mixed_signals = np.matmul(mixing_matrix, signals_to_mix)
-# print(mixed_signals.shape)
+
 mixed_signals_scaled = np.int16(mixed_signals.transpose()/np.max(np.abs(mixed_signals.transpose())) * 32767)
-sio.wavfile.write('mixed_sound_data/mixed_sound_0_1', 44100, mixed_signals_scaled)
+
+# Generates mixed sound wav file
+# sio.wavfile.write('mixed_sound_data/mixed_sound_0_1', 44100, mixed_signals_scaled)
+
+# Create W Matrix (n by m) to recover the original n source signals
+W = 10*np.random.rand(num_of_source_signals, num_of_mixed_signals)
+
