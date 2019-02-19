@@ -1,10 +1,8 @@
-from numpy import short
-from numpy.core._multiarray_umath import ndarray
 from scipy.io.wavfile import write
-from sklearn.preprocessing import normalize
 
 import scipy.io as sio
 import numpy as np
+import matplotlib.pyplot as plt
 
 from generate_mixing_matrix import generate_mixing_matrix
 from cdf_guesstimate import cdf_eval
@@ -28,28 +26,20 @@ learning_rate = 0.1  # adjust for gradient descent
 
 mixing_matrix = generate_mixing_matrix(num_of_mixed_signals, num_of_source_signals)
 mixed_signals = np.matmul(mixing_matrix, signals_to_mix)
-# print(mixed_signals.shape)
-mixed_signals_scaled = mixed_signals
-# print(mixed_signals_scaled)
-# mixed_signals_scaled = np.int16(mixed_signals.transpose()/np.max(np.abs(mixed_signals.transpose())) * 32767).transpose()
-mixed_signals_scaled = np.vstack((mixed_signals_scaled[0, :], mixed_signals_scaled[0, :]))
-# mixed_signals_scaled = normalize(mixed_signals_scaled)
-# print(mixed_signals_scaled)
 
-# print(np.ndarray.min(mixed_signals_scaled))
-# print(np.ndarray.max(mixed_signals_scaled))
-# print(mixed_signals_scaled.shape)
+# scaled mixed signals as o1 and o2
+o1 = np.int16(mixed_signals[0, :] / np.max(np.abs(mixed_signals[0, :])) * 32767)
+o2 = np.int16(mixed_signals[1, :] / np.max(np.abs(mixed_signals[1, :])) * 32767)
+
 # Generates mixed sound wav file
 # sio.wavfile.write('mixed_sound_data/mixed_sound_0_1', 44100, mixed_signals_scaled)
 
 # Create W Matrix (n by m) to recover the original n source signals
 W = 2*np.random.rand(num_of_source_signals, num_of_mixed_signals)
 # TODO: Create Gradient Descent Loop Here
-# converged = False
-# while not converged:
-for i in range(500):
+for i in range(1000):
     # Step 3
-    curr_source_estimate = np.matmul(W, mixed_signals_scaled)
+    curr_source_estimate = np.matmul(W, mixed_signals)
     # Step 4
     Z = cdf_eval(curr_source_estimate)
     # Step 5
@@ -58,16 +48,44 @@ for i in range(500):
     del_W = np.identity(2) + del_W
     del_W = del_W * learning_rate
     del_W = np.matmul(del_W, W)
-    # del_W = learning_rate*np.matmul((np.identity(2) + np.matmul((1-2*Z), curr_source_estimate.transpose())), W)
     # Step 6
     W = W + del_W
-    dist = np.linalg.norm(curr_source_estimate-signals_to_mix)
-    # if dist < 20:
-    #     print("True")
-    #     converged = True
+
+# Save reconstructed sounds to unmixed_sound_data directory
 t1 = np.int16(curr_source_estimate[0, :] / np.max(np.abs(curr_source_estimate[0, :])) * 32767)
 sio.wavfile.write('unmixed_sound_data/unmixed_sound_0', 44100, t1)
 
 t2 = np.int16(curr_source_estimate[1, :] / np.max(np.abs(curr_source_estimate[1, :])) * 32767)
 sio.wavfile.write('unmixed_sound_data/unmixed_sound_1', 44100, t2)
+
+# map original signals, mixed signals, and reconstructed signals between 0 and 1 for plotting
+# original signals:
+original_signals_scaled_1 = signals_to_mix[0, :] / np.linalg.norm(signals_to_mix[0, :])
+original_signals_scaled_2 = signals_to_mix[1, :] / np.linalg.norm(signals_to_mix[1, :])
+
+# mixed signals: o
+o1 = o1 / np.linalg.norm(o1)
+o2 = o2 / np.linalg.norm(o2)
+
+# recovered signals: t
+t1_scaled = t1 / np.linalg.norm(t1)
+t2_scaled = t2 / np.linalg.norm(t2)
+
+# begin plotting signals
+fig, axs = plt.subplots(3, 1)
+samp_number = np.arange(44000)
+offset = 0.1
+# original signals
+axs[0].plot(samp_number, original_signals_scaled_1, samp_number, original_signals_scaled_2 + offset)
+axs[0].set_xlabel('original samples')
+
+# mixed signals
+axs[1].plot(samp_number, o1, samp_number, o2 + offset)
+axs[1].set_xlabel('mixed samples')
+
+# unmixed signals plot
+axs[2].plot(samp_number, t1_scaled, samp_number, t2_scaled + offset)
+axs[2].set_xlabel('reconstructed samples')
+
+plt.show()
 print('done')
