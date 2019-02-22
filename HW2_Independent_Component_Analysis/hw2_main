@@ -102,7 +102,7 @@ for i in range(num_of_source_signals):
     temp_max = 0
     temp_index = 0
     for j in range(num_of_mixed_signals):
-        curr_max = np.correlate(originals[i, :], reconstructed[j, :])
+        curr_max = np.absolute(np.correlate(originals[i, :], reconstructed[j, :]))
         # print(curr_max)
         if curr_max > temp_max and j not in Dict.values():
             temp_max = curr_max
