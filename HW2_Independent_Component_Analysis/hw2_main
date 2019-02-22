@@ -1,5 +1,6 @@
 from scipy.io.wavfile import write
 from numpy import linalg as LA
+from sklearn.metrics import mean_squared_error
 
 import scipy.io as sio
 import numpy as np
@@ -19,7 +20,7 @@ unmixed_sounds = sound_mat['sounds']
 # sio.wavfile.write('original_sound_3', 44100, unmixed_sounds[3, :])
 # sio.wavfile.write('original_sound_4', 44100, unmixed_sounds[4, :])
 
-signals_to_mix = np.vstack((unmixed_sounds[0, :], unmixed_sounds[1, :]))  # unmixed_sounds[2, :]))
+signals_to_mix = np.vstack((unmixed_sounds[0, :], unmixed_sounds[3, :]))  # unmixed_sounds[2, :]))
 
 num_of_source_signals = signals_to_mix.shape[0]
 num_of_mixed_signals = 2
@@ -93,16 +94,19 @@ for i in range(num_of_source_signals):
     temp_max = 0
     temp_index = 0
     for j in range(num_of_mixed_signals):
-        curr_max = np.correlate(signals_to_mix[i, :], signals_to_mix[j, :])
+        curr_max = np.correlate(originals[i, :], reconstructed[j, :])
         # print(curr_max)
-        if curr_max > temp_max:
+        if curr_max > temp_max and j not in Dict.values():
             temp_max = curr_max
             temp_index = j
     Dict[i] = temp_index
+    print(mean_squared_error(originals[i, :], reconstructed[temp_index, :]))
 print(Dict)
 
-# insert accuracy determination (MSE) within here
-
+# # insert accuracy determination (MSE) within here
+# for i in range(num_of_source_signals):
+#     mse = mean_squared_error(originals[i, :], reconstructed[Dict[i], :])
+#     print(mse)
 
 # begin plotting signals
 fig, axs = plt.subplots(3, 1)
@@ -117,7 +121,7 @@ axs[1].plot(samp_number, o1, samp_number, o2 + offset) #  , samp_number, o3 + 2*
 axs[1].set_xlabel('mixed samples')
 
 # unmixed signals plot
-axs[2].plot(samp_number, t1_scaled, 'r', samp_number, t2_scaled + offset, 'b') #  , samp_number, t3_scaled + 2*offset)
+axs[2].plot(samp_number, reconstructed[Dict[0], :], 'r', samp_number, reconstructed[Dict[1], :] + offset, 'b') #  , samp_number, t3_scaled + 2*offset)
 axs[2].set_xlabel('reconstructed samples')
 
 plt.show()
