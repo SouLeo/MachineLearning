@@ -199,11 +199,14 @@ By the nature of Independent Component Analysis, the order of the input signals,
 The normalized cross correlation takes the same form, but is then divided by the magnitude of the individual signals.
 \bigbreak
 \noindent
-Once the signals have been properly identified, the accuracy of the reconstruction can be calculated. This is done using the mean squared error metric provided in Equation (18) below.
+Once the signals have been properly identified, the accuracy of the reconstruction can be calculated. This is done using the mean squared error (MSE) metric after all signals have been normalized between 0 and 1. The MSE equation is provided in Equation (18) below.
 
 \begin{equation}
     MSE=\frac{1}{N}\sum_{i=1}^{N} (Y_{i}-\hat{Y_{i}})^2
 \end{equation}
+\bigbreak
+\noindent
+It is important to note, the cross correlation value influences how Equation (18) is performed. If the normalized cross correlation is approximately 1, then Equation (18) is used as written. If the normalized cross correlation is approximated negative 1, that indicates the signal during reconstruction has been flipped across the x-axis. Therefore, before evaluating the match with Equation (18), the reconstructed signal is flipped before calculating the MSE.  
 
 \subsection{Binary Source Signal Reconstruction}
 
@@ -271,7 +274,7 @@ In Figure 2 above, we can see that the mixture of Signals 0 and 1 and in the mix
 It is important to note for Table 1 above that the mixing matrix A was not kept constant across measurements of accuracy. Therefore, it is difficult to judge which signal mixtures are easier to reconstruct over others. It is also important to note that the Mean Squared Error (MSE) accuracy measurement is a distance measurement. Given that the magnitudes of the signals are roughly [0, 0.5], the MSE will always look small (see Equation (18)). Generally speaking, the magnitudes of the errors (e-7 or smaller) are still far less than the magnitudes of the signals, thus the overall reconstruction using ICA and Gradient Descent is still very impressive.
 
 \subsection{Multiple Source Signal Reconstruction}
-The same metrics for signal identification, accuracy, and 0.01 learning rate in the pair mixing in subsection 3.2 are used in this subsection. Figures 6-8 show BSS problems involving three mixed signals, four mixed signals, and five mixed signals respectively. Table 2 on page 11 summarizes the MSE accuracies from the experiments performed.
+The same metrics for signal identification, accuracy, and learning rate in the pair mixing in subsection 3.2 are used in this subsection. Figures 6-8 show BSS problems involving three mixed signals, four mixed signals, and five mixed signals respectively. Table 2 on page 11 summarizes the MSE accuracies from the experiments performed.
 
 \begin{figure}[!htb] % replace 't' with 'b' to force it to be on the bottom
   \centering
@@ -312,30 +315,35 @@ The same metrics for signal identification, accuracy, and 0.01 learning rate in 
 Impressively, the mean squared errors for the multiple signal reconstruction stayed within the same order as the MSE for the pair signal measurements. However, the computational effort and ability to reach the optimum likelihood weights for W during gradient descent took much longer when adding additional signals to the mixing problem.
 
 \subsection{Learning Rate's Effect on Accuracy (Mean Squared Error)}
-
-\begin{figure}[!htb] % replace 't' with 'b' to force it to be on the bottom
-  \centering
-  \includegraphics[width = \linewidth]{MSE_1.jpg}
-  \caption{The Effect of the Learning Rate Parameter [0.001, 10] on Mean Squared Error}
-\end{figure}
-\FloatBarrier
+In this section, the learning rate parameter is adjusted from \(10^{-2}\) to \(5\). It can be observed in Figure 9 below that the effect of learning rate on the mean squared error is minimal until reaching a learning rate of 3. Once this point is reached, an almost periodic triangle wave is produced. 
 \begin{figure}[!htb] % replace 't' with 'b' to force it to be on the bottom
   \centering
   \includegraphics[width = \linewidth]{MSE_2.jpg}
   \caption{The Effect of the Learning Rate Parameter [0.001, 5] on Mean Squared Error}
 \end{figure}
 \FloatBarrier
-
+\bigbreak
+\noindent
+This graph feature is an artifact of the artificial timer I set in my gradient descent loop. If my model does not converge after 10,000 iterations, my system will automatically return the signals in their current form. In some cases, this form is very close to maximum likelihood guess and produces a MSE minimum. In other cases, the form moves far away from the MSE minima as a result of iterating over a large step size (thus overshooting the maximum likelihood optimum.)
+\bigbreak
+\noindent
+If the for loop time out did not exist, there is a reasonable chance that the system would not converge, making error calculations impossible to perform.
 \subsection{Learning Rate's Effect on Convergence (Number of Update Iterations)}
-
+The effect of the learning rate on convergence basically amounts to finding a "goldilocks" zone. In most stochastic gradient descent problems, the engineering trade off for selecting the learning rate involves minimizing the speed to converge by increasing the learning rate step size, but not massively over shooting the optima when getting closer to convergence. 
+ 
 \begin{figure}[!htb] % replace 't' with 'b' to force it to be on the bottom
   \centering
   \includegraphics[width = \linewidth]{Conv.jpg}
   \caption{The Effect of the Learning Rate Parameter [0.001, 5] on Convergence}
 \end{figure}
 \FloatBarrier
-
+\bigbreak
+\noindent
+In Figure 10 above, the "goldilocks" zone is around 0.5 to 3.5. In that range of values, it typically take 5-10 iterations for the system to converge. Once the learning rate surpasses 4, the system does not converge. The plateau at 1000 iterations is due to the for loop timer maxing out at 1000.
 \section{Summary}
-
+To solve the Blind Source Separation problem, Independent Component Analysis and Gradient Descent were used. On average, with a learning rate of 0.01 and a convergence condition of \(\left \| \Delta W \right \| < 0.0001\), the mean squared error of the reconstructed signals were on the order of \(10^{-8}\), thus indicating that the overall reconstruction was very good. 
+\bigbreak
+\noindent
+By experimenting with the learning rate parameter, it was observed that it effects both the overall errors of signal reconstruction and convergence of the gradient descent algorithm. In both cases, an optimal zone of the learning parameter value exists. This is because a balance must be met between reaching the optimal zone quickly with large learning parameter step sizes versus not constantly overshooting the optimum after quickly getting close to it. It is common in stochastic gradient descent to address this issue by incorporating adaptive learning rates which scale down as you approach the optimum. 
 \end{document}
               
