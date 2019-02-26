@@ -43,7 +43,7 @@ o2 = np.int16(mixed_signals[1, :] / np.max(np.abs(mixed_signals[1, :])) * 32767)
 W = 2*np.random.rand(num_of_source_signals, num_of_mixed_signals)
 # TODO: Create Gradient Descent Loop Here
 butt = 20
-learning_rate = np.linspace(0.001, 5, butt)
+learning_rate = np.linspace(0.001, 0.5, butt)
 signal0_accuracy = np.zeros(butt)
 signal1_accuracy = np.zeros(butt)
 for j in range(butt):
@@ -61,8 +61,8 @@ for j in range(butt):
         # Step 6
         W = W + del_W
 
-        condy = np.matmul(del_W, mixed_signals)
-        if condy.all() < 0.001:
+        # condy = np.matmul(del_W, mixed_signals)
+        if LA.norm(del_W) < 0.01:
             #print('converged')
             break
     # Save reconstructed sounds to unmixed_sound_data directory
@@ -87,7 +87,7 @@ for j in range(butt):
             corr = np.absolute(np.correlate(originals[n, :], reconstructed[m, :]))
             mse = mean_squared_error(originals[n, :], reconstructed[m, :])
             A[n][m] = (corr, mse)
-
+    print(A)
     if A[0][0][0] > A[0][1][0]:
         signal0_accuracy[j] = A[0][0][1]
     else:
@@ -100,8 +100,49 @@ for j in range(butt):
 
 plt.plot(learning_rate, signal0_accuracy, label='Signal 0', color='b')  # learning_rate, signal1_accuracy)
 plt.plot(learning_rate, signal1_accuracy, label='Signal 1', color='r')
+plt.yscale("log")
+plt.xscale("log")
 plt.legend()
 plt.show()
+
+
+
+# Create W Matrix (n by m) to recover the original n source signals
+# W = 2*np.random.rand(num_of_source_signals, num_of_mixed_signals)
+# # TODO: Create Gradient Descent Loop Here
+# butt = 20
+# learning_rate = np.linspace(0.001, 5, butt)
+# convergence = np.zeros(butt)
+# isConverge = False
+# for j in range(butt):
+#     for i in range(1000): #0): #00):
+#         # Step 3
+#         curr_source_estimate = np.matmul(W, mixed_signals)
+#         # Step 4
+#         Z = cdf_eval(curr_source_estimate)
+#         # Step 5
+#         del_W = 1-2*Z
+#         del_W = (1/44000)*np.matmul(del_W, curr_source_estimate.transpose())  # 1/44000*
+#         del_W = np.identity(num_of_source_signals) + del_W
+#         del_W = del_W * learning_rate[j]
+#         del_W = np.matmul(del_W, W)
+#         # Step 6
+#         W = W + del_W
+#         print(i)
+#         condy = del_W # np.matmul(del_W, mixed_signals)
+#         if LA.norm(condy) < 0.01:
+#             print('converged')
+#             convergence[j] = i
+#             isConverge = True
+#             break
+#     if not isConverge:
+#         convergence[j] = 1000
+#     if isConverge:
+#         isConverge = False
+#
+# plt.plot(learning_rate, convergence)  # learning_rate, signal1_accuracy)
+# # plt.plot(learning_rate, signal1_accuracy, label='Signal 1', color='r')
+# plt.show()
 
 # print(signal0_accuracy)
 # print(signal1_accuracy)
