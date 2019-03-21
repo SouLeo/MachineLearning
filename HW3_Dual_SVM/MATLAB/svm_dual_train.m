@@ -8,9 +8,9 @@ function [support_vecs, conv, w, b] = svm_dual_train(train_img_col, svm_labels_c
     % gamma for RBF kernel
     gamma = 0.2;
     % convergence param:
-    convergence_param = 1;
+    convergence_param = 0.01;
     % soft vs. hard margin for classifier
-    C = 100;
+    C = 1000;
     % params that I need more for loop
     b = 0; 
     w = 0;
