@@ -1,4 +1,4 @@
-function K_RBF = RBF_Kernel(X, sigma)
-    [~, n] = size(X);
-    K_RBF = exp(-(sum(X'.^2)'*ones(1,n) -ones(n,1)*sum(X'.^2) + 2*X*X')/(2*sigma^2));
+% https://stackoverflow.com/questions/37362258/creating-a-radial-basis-function-kernel-matrix-in-matlab
+function K_RBF = RBF_Kernel(x1, x2, sigma)
+    K_RBF = exp(-norm(x2-x1)^2 / (2 * (sigma^2)));
 end
