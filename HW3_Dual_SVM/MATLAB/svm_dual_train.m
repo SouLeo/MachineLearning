@@ -1,16 +1,14 @@
 % https://github.com/LasseRegin/SVM-w-SMO/blob/master/SVM.py
-function [support_vecs, conv, w, b] = svm_dual_train(train_img_col, svm_labels_c, max_iter)
+function [support_vecs, conv, w, b] = svm_dual_train(train_img_col, svm_labels_c, max_iter, gamma, C)
     conv = 0;
     training_data = train_img_col';
     svm_labels = svm_labels_c';
     [n_samples, ~]= size(training_data);
     alphas = zeros(1, n_samples);
     % gamma for RBF kernel
-    gamma = 0.2;
     % convergence param:
     convergence_param = 0.01;
     % soft vs. hard margin for classifier
-    C = 1000;
     % params that I need more for loop
     b = 0; 
     w = 0;

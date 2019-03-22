@@ -5,7 +5,7 @@ function [train_img_col, svm_labels] = training_data_input(filename)
     % percents are normalized
     % for total_num_px in image (784 px) to be less than training data size (60000)
     % percent training data <= 0.01306
-    percent_training_data_used = .01; %0.01215;
+    percent_training_data_used = .015; %0.01
 
     % reshapes the 4-d matrix of size (28, 28, 1, 60000) -> size (1, 784, 1, 60000)
     training_img_col = reshape(trainImages, 1, (size_of_training_data(1))^2, 1, size_of_training_data(4));
