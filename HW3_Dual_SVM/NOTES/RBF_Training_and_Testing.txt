@@ -1,0 +1,21 @@
+RBF Training Params: 
+
+gamma = 1.83298071
+C param = 0.001
+
+Testing Data Accuracies:
+a. 0 vs rest(1----9)
+0.9705
+
+b. 7 vs rest
+0.9589
+
+c. 4 vs 9
+0.7956
+
+d. 0 vs 8
+0.9647
+
+e. (0,8,3) vs (1,7,9)
+0.9060
+
