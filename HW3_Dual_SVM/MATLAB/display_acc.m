@@ -1,7 +1,7 @@
-data = load('acc_mat_rbf.mat');
-xvalues = gamma_vec;
+% data = load('acc_mat_rbf.mat');
+xvalues = d_vec;
 yvalues = C_vec;
 h = heatmap(yvalues, xvalues, acc_mat)
-h.Title = 'How RBF Kernel Size and Soft vs Hard Margins Affect Model Accuracy';
+h.Title = 'How Polynomial Kernel Dimension and Soft vs Hard Margins Affect Model Accuracy';
 h.XLabel = 'C Param - Hardness vs Softness';
-h.YLabel = 'Gamma (RBF Kernel Size)';
+h.YLabel = 'd (Polynomial Kernel Dimension)';

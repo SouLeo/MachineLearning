@@ -1,0 +1,20 @@
+Poly Training Params:
+
+d = 1
+C param = 0.001
+
+Testing Data Accuracies:
+a. 0 vs rest(1----9)
+0.9593
+
+b. 7 vs rest
+0.9605
+
+c. 4 vs 9
+0.8292
+
+d. 0 vs 8
+0.9616
+
+e. (0,8,3) vs (1,7,9)
+0.9017
