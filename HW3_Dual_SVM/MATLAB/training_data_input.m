@@ -21,60 +21,60 @@ function [imgs_total, svm_labels_total] = training_data_input(filename, perc)
     train_labels_col = double(trainLabels(1:training_cutoff))';
     svm_labels = train_labels_col;
 
-%     % Classification problem for 7 (pos) vs rest (neg)
+    % Classification problem for 7 (pos) vs rest (neg)
 %     svm_labels_neg = find(svm_labels==0);
 %     svm_labels_pos = find(svm_labels~=0);
 %     svm_labels(svm_labels_neg) = -1;
 %     svm_labels(svm_labels_pos) = 1;
 
     % Classification problem for 4 (pos) vs 9 (neg)
-%     svm_0_ind = find(svm_labels ==0);
-%     svm_8_ind = find(svm_labels ==8);
-%     imgs_0 = train_img_col(:, svm_0_ind);
-%     imgs_8 = train_img_col(:, svm_8_ind);
-%     imgs_total = [imgs_0 imgs_8];
-%     
-%     
-%     svm_labels_8 = svm_labels(svm_8_ind);
-%     svm_labels_0 = svm_labels(svm_0_ind);
-%     svm_labels_total = [svm_labels_8; svm_labels_0];
-%     svm_labels_total(svm_labels_total == 8) = -1;
-%     svm_labels_total(svm_labels_total == 0) = 1;
-
-
-%     % Classification problem for 0,8,3 (pos) vs 1,7,9 (neg)
-    svm_0_ind = find(svm_labels == 0);
-    svm_8_ind = find(svm_labels == 8);
-    svm_3_ind = find(svm_labels == 3);
-    %
-    svm_1_ind = find(svm_labels == 1);
-    svm_7_ind = find(svm_labels == 7);
-    svm_9_ind = find(svm_labels == 9);
-    
+    svm_0_ind = find(svm_labels ==0);
+    svm_8_ind = find(svm_labels ==8);
     imgs_0 = train_img_col(:, svm_0_ind);
     imgs_8 = train_img_col(:, svm_8_ind);
-    imgs_3 = train_img_col(:, svm_3_ind);
-    %
-    imgs_1 = train_img_col(:, svm_1_ind);
-    imgs_7 = train_img_col(:, svm_7_ind);
-    imgs_9 = train_img_col(:, svm_9_ind);
-    imgs_total = [imgs_0 imgs_8 imgs_3 imgs_1 imgs_7 imgs_9];
+    imgs_total = [imgs_0 imgs_8];
+    
     
     svm_labels_8 = svm_labels(svm_8_ind);
     svm_labels_0 = svm_labels(svm_0_ind);
-    svm_labels_3 = svm_labels(svm_3_ind);
-    svm_labels_1 = svm_labels(svm_1_ind);
-    svm_labels_7 = svm_labels(svm_7_ind);
-    svm_labels_9 = svm_labels(svm_9_ind);
-    
-    svm_labels_total = [svm_labels_8; svm_labels_0; svm_labels_3; ...
-        svm_labels_1; svm_labels_7; svm_labels_9];
-    svm_labels_total(svm_labels_total == 1) = -1;
-    svm_labels_total(svm_labels_total == 7) = -1;
-    svm_labels_total(svm_labels_total == 9) = -1;
-    svm_labels_total(svm_labels_total == 8) = 1;
+    svm_labels_total = [svm_labels_8; svm_labels_0];
+    svm_labels_total(svm_labels_total == 8) = -1;
     svm_labels_total(svm_labels_total == 0) = 1;
-    svm_labels_total(svm_labels_total == 3) = 1;
+
+
+%     % Classification problem for 0,8,3 (pos) vs 1,7,9 (neg)
+%     svm_0_ind = find(svm_labels == 0);
+%     svm_8_ind = find(svm_labels == 8);
+%     svm_3_ind = find(svm_labels == 3);
+%     %
+%     svm_1_ind = find(svm_labels == 1);
+%     svm_7_ind = find(svm_labels == 7);
+%     svm_9_ind = find(svm_labels == 9);
+%     
+%     imgs_0 = train_img_col(:, svm_0_ind);
+%     imgs_8 = train_img_col(:, svm_8_ind);
+%     imgs_3 = train_img_col(:, svm_3_ind);
+%     %
+%     imgs_1 = train_img_col(:, svm_1_ind);
+%     imgs_7 = train_img_col(:, svm_7_ind);
+%     imgs_9 = train_img_col(:, svm_9_ind);
+%     imgs_total = [imgs_0 imgs_8 imgs_3 imgs_1 imgs_7 imgs_9];
+%     
+%     svm_labels_8 = svm_labels(svm_8_ind);
+%     svm_labels_0 = svm_labels(svm_0_ind);
+%     svm_labels_3 = svm_labels(svm_3_ind);
+%     svm_labels_1 = svm_labels(svm_1_ind);
+%     svm_labels_7 = svm_labels(svm_7_ind);
+%     svm_labels_9 = svm_labels(svm_9_ind);
+%     
+%     svm_labels_total = [svm_labels_8; svm_labels_0; svm_labels_3; ...
+%         svm_labels_1; svm_labels_7; svm_labels_9];
+%     svm_labels_total(svm_labels_total == 1) = -1;
+%     svm_labels_total(svm_labels_total == 7) = -1;
+%     svm_labels_total(svm_labels_total == 9) = -1;
+%     svm_labels_total(svm_labels_total == 8) = 1;
+%     svm_labels_total(svm_labels_total == 0) = 1;
+%     svm_labels_total(svm_labels_total == 3) = 1;
 
 end
 

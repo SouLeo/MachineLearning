@@ -10,20 +10,24 @@ max_iter = 1000;
 % 
 % acc_mat = zeros(g_size, C_size);
 
-perc = linspace(0.001, 0.2, 15);
-acc_vec = zeros(1, length(perc));
+% perc = linspace(0.001, 0.2, 15);
+% acc_vec = zeros(1, length(perc));
 % for i = 1:g_size
 %     for j = 1:C_size
-for i = 1:length(perc)
-        [train_img_col, svm_labels] = training_data_input('digits.mat', perc(i));
-        [support_vecs, conv, w, b] = svm_dual_train(train_img_col, ...
+% for i = 1:length(perc)
+        [train_img_col, svm_labels] = training_data_input('digits.mat', 0.015);
+        coeff = pca(train_img_col');
+        coeff_subspace = coeff(:,1:28);
+        img_subspace = coeff_subspace'*train_img_col;
+        [support_vecs, conv, w, b] = svm_dual_train(img_subspace, ...
         svm_labels, max_iter, 1.83298071, 0.001);
         % predictions
-        y_hat = sign(mtimes(w',test_img_col) + b);
+        test_img_subspace = coeff_subspace'*test_img_col;
+        y_hat = sign(mtimes(w',test_img_subspace) + b);
         % calc acc
         acc = calc_acc(y_hat', test_svm_labels);
-        acc_vec(i) = acc;
-end
+%         acc_vec(i) = acc;
+% end
 %         acc_mat(i, j) = acc;
 %         j
 %         conv
