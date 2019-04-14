@@ -16,7 +16,17 @@ class FFNetwork(object):
         self.biases = [np.random.randn(x, 1) for x in self.layers_and_dim[1:]]
         # self.weights is
         shift = np.roll(self.layers_and_dim, 1)
-        weight_combos = np.concatenate((self.layers_and_dim, shift), axis=1)
+        weight_combos = np.column_stack((self.layers_and_dim, shift))
         weight_combos = np.delete(weight_combos, 0, 0)
         self.weights = [np.random.randn(x, y) for x, y in weight_combos]
+        # print(self.weights[0].shape)
+        # print(self.weights[1].shape)
+        # print(self.weights[2].shape)
 
+def main():
+    nn_architecture = np.array([784, 16, 16, 10])
+    test = FFNetwork(nn_architecture)
+
+
+if __name__ == '__main__':
+    main()
