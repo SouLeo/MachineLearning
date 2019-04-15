@@ -19,14 +19,15 @@ class FFNetwork(object):
         weight_combos = np.column_stack((self.layers_and_dim, shift))
         weight_combos = np.delete(weight_combos, 0, 0)
         self.weights = [np.random.randn(x, y) for x, y in weight_combos]
-        # print(self.weights[0].shape)
-        # print(self.weights[1].shape)
-        # print(self.weights[2].shape)
+        #self.cost =
 
-def main():
-    nn_architecture = np.array([784, 16, 16, 10])
-    test = FFNetwork(nn_architecture)
+#def backpropagation(self, x, y):
+    #func shit
+
+# def main():
+#     nn_architecture = np.array([784, 16, 16, 10])
+#     test = FFNetwork(nn_architecture)
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
