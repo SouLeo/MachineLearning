@@ -1,4 +1,5 @@
 import numpy as np
+from inputData import mat_input
 
 class FFNetwork(object):
     def __init__(self, layers_and_dim):
@@ -19,15 +20,29 @@ class FFNetwork(object):
         weight_combos = np.column_stack((self.layers_and_dim, shift))
         weight_combos = np.delete(weight_combos, 0, 0)
         self.weights = [np.random.randn(x, y) for x, y in weight_combos]
-        #self.cost =
+        #self.cost = cost
+
+    def create_mini_batch(self, train_img, train_labels, mini_batch_size):
+        mini_batch_img = [train_img[:, x:x+mini_batch_size]
+                          for x in range(0, train_img.shape[1], mini_batch_size)]
+        mini_batch_label = [train_labels[x:x+mini_batch_size]
+                            for x in range(0, len(train_labels), mini_batch_size)]
+        # print(mini_batch_img[0].shape)
+        # print(len(mini_batch_label[0]))
+
+#    def SGD(self, epochs, learn_rate):
+#        for i in range(epochs):
+
 
 #def backpropagation(self, x, y):
     #func shit
 
-# def main():
-#     nn_architecture = np.array([784, 16, 16, 10])
-#     test = FFNetwork(nn_architecture)
+def main():
+    nn_architecture = np.array([784, 16, 16, 10])
+    test = FFNetwork(nn_architecture)
+    train_images, train_labels, test_images, test_labels = mat_input()
+    test.create_mini_batch(train_images, train_labels, 100)
 
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()
