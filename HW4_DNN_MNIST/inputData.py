@@ -19,7 +19,7 @@ def mat_input():
     test_images = np.reshape(test_images, (1, 784, 1, 10000))
     test_images = np.squeeze(test_images)
 
-    return(train_images, train_labels, test_images, test_labels)
+    return train_images, train_labels, test_images, test_labels
 
 
 def one_hot(i):

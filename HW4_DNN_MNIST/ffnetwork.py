@@ -2,6 +2,7 @@ import numpy as np
 from inputData import mat_input
 
 class FFNetwork(object):
+
     def __init__(self, layers_and_dim):
         self.layers_and_dim = layers_and_dim
         self.num_layers = len(self.layers_and_dim)
@@ -29,19 +30,38 @@ class FFNetwork(object):
                             for x in range(0, len(train_labels), mini_batch_size)]
         # print(mini_batch_img[0].shape)
         # print(len(mini_batch_label[0]))
+        return mini_batch_img, mini_batch_label
 
-#    def SGD(self, epochs, learn_rate):
-#        for i in range(epochs):
+    def stoch_grad_desc(self, epochs, learn_rate, mini_batch_img, mini_batch_labels):
+        # print(mini_batch_img[2].shape) # length is the size of mini_batch
+        # print(mini_batch_img[2][:, 1]) # shape: (784, 1)
+        # print(len(mini_batch_labels[2])) # length is size of mini_batch
+        # print(mini_batch_labels[2][1]) # shape: (10, 1)
+        for i in range(epochs):
+            for m in range(len(mini_batch_labels)):
+                self.update_params(mini_batch_img[m], mini_batch_labels[m], learn_rate)
+                #print(m)  # length of for loop is 60,000 / mini_batch_size
 
+    def update_params(self, img, lab, learn_rate):
+        # img shape: (784, mini_batch_size) <- (784, 100)
+        # lab len: (100) <- list NOT vec
+        print("hi")
 
-#def backpropagation(self, x, y):
-    #func shit
+# def backpropagation(self, x, y):
+#   func shit
 
 def main():
+    # NN Arch Params
+    epochs = 4
+    learn_rate = 0.5
+    mini_batch_size = 100
     nn_architecture = np.array([784, 16, 16, 10])
+
     test = FFNetwork(nn_architecture)
+    # TODO: Put following code into a ffnetwork member func.
     train_images, train_labels, test_images, test_labels = mat_input()
-    test.create_mini_batch(train_images, train_labels, 100)
+    mini_img, mini_lab = test.create_mini_batch(train_images, train_labels, mini_batch_size)
+    test.stoch_grad_desc(epochs, learn_rate, mini_img, mini_lab)
 
 
 if __name__ == '__main__':
