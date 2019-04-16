@@ -42,13 +42,24 @@ class FFNetwork(object):
                 self.update_params(mini_batch_img[m], mini_batch_labels[m], learn_rate)
                 #print(m)  # length of for loop is 60,000 / mini_batch_size
 
-    def update_params(self, img, lab, learn_rate):
+    def update_params(self, img, label, learn_rate):
         # img shape: (784, mini_batch_size) <- (784, 100)
-        # lab len: (100) <- list NOT vec
-        print("hi")
+        # label len: (100) <- list NOT vec
+        # print(img[:, 1].shape)
+        # print(len(label[1]))
+        #
+        dL_db = [np.zeros(b.shape) for b in self.biases]
+        dL_dw = [np.zeros(w.shape) for w in self.weights]
+        # print(dL_db[2].shape)
+        # print(dL_dw[2].shape)
+        for i in range(len(label)):
+            self.backpropagation(img[:, i], label[i])
+            # TODO: finish writing for loop
 
-# def backpropagation(self, x, y):
-#   func shit
+ #   def backpropagation(self, img, label):
+        # img shape (784, 1)
+        # label shape (10, 1)
+
 
 def main():
     # NN Arch Params
