@@ -27,10 +27,3 @@ def one_hot(i):
     vec[i] = 1.0
     return vec
 
-
-# def main():
-#     mat_input()
-#
-#
-# if __name__ == '__main__':
-#     main()

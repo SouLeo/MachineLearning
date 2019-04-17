@@ -1,5 +1,7 @@
 import numpy as np
 from inputData import mat_input
+import activationfuncs
+
 
 class FFNetwork(object):
 
@@ -21,6 +23,7 @@ class FFNetwork(object):
         weight_combos = np.column_stack((self.layers_and_dim, shift))
         weight_combos = np.delete(weight_combos, 0, 0)
         self.weights = [np.random.randn(x, y) for x, y in weight_combos]
+        # print(self.weights[0].shape)
         #self.cost = cost
 
     def create_mini_batch(self, train_img, train_labels, mini_batch_size):
@@ -56,9 +59,28 @@ class FFNetwork(object):
             self.backpropagation(img[:, i], label[i])
             # TODO: finish writing for loop
 
- #   def backpropagation(self, img, label):
+    def backpropagation(self, img, label):
         # img shape (784, 1)
         # label shape (10, 1)
+        dL_db = [np.zeros(b.shape) for b in self.biases]
+        dL_dw = [np.zeros(w.shape) for w in self.weights]
+        #
+        activation = img
+        activation_list = [img]
+        z_s = []  # preactivation func. vectors (list z's)
+
+        # print(len(self.biases))
+        # print(len(self.weights))
+        # print(self.weights[0].shape)
+
+        for i in range(len(self.biases)):
+            # print(w.shape)
+            z = np.dot(self.weights[i], activation) + self.biases[i]
+            z_s.append(z)
+            activation = activationfuncs.sigmoid(z)  #overflows
+            activation_list.append(activation)
+
+        # backprop algo starts:
 
 
 def main():
