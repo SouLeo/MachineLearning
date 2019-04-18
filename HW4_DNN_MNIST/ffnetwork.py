@@ -126,9 +126,25 @@ class FFNetwork(object):
                                                     mini_batch_size)
         self.stoch_grad_desc(epochs, learn_rate, mini_img, mini_lab)
 
+    def evaluate(self, a):
+        for i in range(len(self.biases)):
+            a = self.activ.fn(np.dot(self.weights[i], a)+self.biases[i])
+        return a
+
     def test_nn(self, test_img, test_lab):
         # test results using feedforward metric
-        print("hi")
+        #print(test_img.shape)
+
+        # print(test_lab.shape)
+        num_correct = 0
+        for i in range(test_lab.shape[1]):
+            curr_img = np.expand_dims(test_img[:, i], axis=1)
+            prediction = np.argmax(self.evaluate(curr_img))
+            if test_lab[:, i] == prediction:
+                num_correct = num_correct + 1
+        return num_correct/test_lab.shape[1]
+        # print(predictions[0])
+        # print("hi")
 
 
 def main():
@@ -141,13 +157,13 @@ def main():
     nn_architecture = np.array([784, 16, 16, 10])
 
     feed_forward = FFNetwork(nn_architecture, cost, activ)
-    # TODO: Put following code into a ffnetwork member func.
     train_images, train_labels, test_images, test_labels = mat_input()
     feed_forward.train_nn(train_images, train_labels, mini_batch_size, epochs, learn_rate)
+    acc = feed_forward.test_nn(test_images, test_labels)
+    print('Done!')
+    print(acc)
     # mini_img, mini_lab = test.create_mini_batch(train_images, train_labels, mini_batch_size)
     # test.stoch_grad_desc(epochs, learn_rate, mini_img, mini_lab)
-    print('Done!')
-
 
 if __name__ == '__main__':
     main()
