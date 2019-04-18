@@ -3,6 +3,7 @@ from inputData import mat_input
 import activationfuncs
 import cost_functions
 
+
 class FFNetwork(object):
 
     def __init__(self, layers_and_dim, cost, activ):
@@ -44,7 +45,7 @@ class FFNetwork(object):
         for i in range(epochs):
             for m in range(len(mini_batch_labels)):
                 self.update_params(mini_batch_img[m], mini_batch_labels[m], learn_rate)
-                #print(m)  # length of for loop is 60,000 / mini_batch_size
+                # print(m)  # length of for loop is 60,000 / mini_batch_size
 
     def update_params(self, img, label, learn_rate):
         # img shape: (784, mini_batch_size) <- (784, 100)
@@ -57,9 +58,13 @@ class FFNetwork(object):
         # print(dL_db[2].shape)
         # print(dL_dw[2].shape)
         for i in range(len(label)):
-            self.backpropagation(img[:, i], label[i])
-        # self.backpropagation(img, label)
-            # TODO: finish writing for loop
+            delta_dL_dw, delta_dL_db = self.backpropagation(img[:, i], label[i])
+            dL_dw = [dL_dw[w] + delta_dL_dw[w] for w in range(len(dL_dw))]
+            dL_db = [dL_db[b] + delta_dL_db[b] for b in range(len(dL_db))]
+        self.weights = [self.weights[w] - (learn_rate / len(img)) * dL_dw[w]
+                        for w in range(len(self.weights))]
+        self.biases = [self.biases[b] - (learn_rate / len(label)) * dL_db[b]
+                       for b in range(len(self.biases))]
 
     def backpropagation(self, img, label):
         # img shape (784, 1)
@@ -91,7 +96,7 @@ class FFNetwork(object):
             # print(activation.min())
             # print(activation.shape)
 
-        #print(activation_list[2].shape)
+        # print(activation_list[2].shape)
         # backprop algo starts:
         delta = self.cost.delta(activation_list[-1], label)
 
@@ -104,7 +109,7 @@ class FFNetwork(object):
             sp = self.activ.deriv(z)  # change to class, like cost_func
             # watch line beneath
             delta = np.dot(self.weights[-i + 1].transpose(), delta) * sp
-            #print(activation_list[-i - 1].shape)
+            # print(activation_list[-i - 1].shape)
             dL_db[-i] = delta
             # print(i)
             # print(delta.shape)
@@ -114,6 +119,16 @@ class FFNetwork(object):
             # print(activation_list[-4].shape)
             dL_dw[-i] = np.dot(delta, activation_list[-i - 1].transpose())
         return dL_dw, dL_db
+
+    def train_nn(self, train_images, train_labels, mini_batch_size, epochs, learn_rate):
+        mini_img, mini_lab = self.create_mini_batch(train_images,
+                                                    train_labels,
+                                                    mini_batch_size)
+        self.stoch_grad_desc(epochs, learn_rate, mini_img, mini_lab)
+
+    def test_nn(self, test_img, test_lab):
+        # test results using feedforward metric
+        print("hi")
 
 
 def main():
@@ -125,11 +140,12 @@ def main():
     activ = activationfuncs.Sigmoid
     nn_architecture = np.array([784, 16, 16, 10])
 
-    test = FFNetwork(nn_architecture, cost, activ)
+    feed_forward = FFNetwork(nn_architecture, cost, activ)
     # TODO: Put following code into a ffnetwork member func.
     train_images, train_labels, test_images, test_labels = mat_input()
-    mini_img, mini_lab = test.create_mini_batch(train_images, train_labels, mini_batch_size)
-    test.stoch_grad_desc(epochs, learn_rate, mini_img, mini_lab)
+    feed_forward.train_nn(train_images, train_labels, mini_batch_size, epochs, learn_rate)
+    # mini_img, mini_lab = test.create_mini_batch(train_images, train_labels, mini_batch_size)
+    # test.stoch_grad_desc(epochs, learn_rate, mini_img, mini_lab)
     print('Done!')
 
 
