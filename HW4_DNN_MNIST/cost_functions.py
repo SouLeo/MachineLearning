@@ -12,21 +12,13 @@ class CrossEntropyLoss(object):
         return a-y
 
 
-class HingeLoss(object):
+class QuadLoss(object):
 
     @staticmethod
-    def fn(active_func, z, y):
-        return np.max(0, 1 + active_func.fn(z) - y)
+    def fn(a, y):
+        return 0.5*np.linalg.norm(a-y)**2
 
     @staticmethod
     def delta(active_func, z, a, y):
-        temp = active_func(z) - y
-        ans = np.zeros(temp.shape)
-        ans[temp >= -1] = active_func.deriv(z)*a
-        return ans
+        return (a-y) * active_func.fn(z)
 
-#    @staticmethod
-#    def fn(truth_label, predicted):
-        # pos = np.sum(truth_label * predicted, axis=-1)
-        # neg = np.amax((1.0-truth_label) * predicted, axis=-1)
-        # return np.mean(np.max(0.0, neg - pos + 1), axis=-1)
