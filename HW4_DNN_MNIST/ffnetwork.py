@@ -1,3 +1,4 @@
+# selma wanna 4/19
 import numpy as np
 from inputData import mat_input
 import activationfuncs
@@ -149,12 +150,12 @@ class FFNetwork(object):
 
 def main():
     # NN Arch Params
-    epochs = 4
-    learn_rate = 0.5
+    epochs = 30
+    learn_rate = 1
     mini_batch_size = 100
     cost = cost_functions.CrossEntropyLoss
-    activ = activationfuncs.Sigmoid
-    nn_architecture = np.array([784, 16, 16, 10])
+    activ = activationfuncs.Tanh
+    nn_architecture = np.array([784, 24, 24, 10])
 
     feed_forward = FFNetwork(nn_architecture, cost, activ)
     train_images, train_labels, test_images, test_labels = mat_input()

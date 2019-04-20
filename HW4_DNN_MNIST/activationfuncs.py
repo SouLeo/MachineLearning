@@ -16,11 +16,13 @@ class Tanh(object):
 
     @staticmethod
     def fn(z):
+        # print(np.tanh(z))
         return np.tanh(z)
 
     @staticmethod
     def deriv(z):
-        1.0-np.tanh(z)**2
+        # print(z.shape)
+        return 1.0-np.tanh(z)**2
 
 class ReLu(object):
 
