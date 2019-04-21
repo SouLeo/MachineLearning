@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.io as sio
-
+from sklearn import preprocessing
 
 def mat_input():
     mnist_data = sio.loadmat('digits.mat')
@@ -18,6 +18,9 @@ def mat_input():
 
     test_images = np.reshape(test_images, (1, 784, 1, 10000))
     test_images = np.squeeze(test_images)
+
+    train_images = train_images/255
+    test_images = test_images/255
 
     return train_images, train_labels, test_images, test_labels
 

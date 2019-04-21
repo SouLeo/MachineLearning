@@ -1,0 +1,35 @@
+1. Compare sigmoid, tanh, ReLu and one semi-linear activation function (your choosing) in terms of performance.
+Decribe the performance and analyze both empirically and theoretically.
+
+24 neurons, 2 layers, cross-entropy loss
+
+sigmoid: acc: 0.9167 (epochs=30, learn_rate=1, batchsize=100) 
+tanh: acc: 0.8950 (epochs=30, learn_rate=1, batchsize=100) [maybe retest withed sigmoid last layer]
+ReLu: acc: 0.4111
+ELU: acc: 0.6610
+ 
+
+2. Compare architectures performance in terms of depth (#layers) and width (#units in each layer)
+
+Layers (width = 16 neurons, sigmoid activation, cross-entropy loss, epochs = 30, learn_rate = 1, batchsize = 100):
+
+1: acc: 0.9005
+2: acc: 0.9081
+3: acc: 0.9068
+
+Units (layers = 2 layers, sigmoid activation, cross-entropy loss, epochs = 30, learn_rate = 1, batchsize = 100):
+
+08: acc: 0.8890
+16: acc: 0.9081
+24: acc: 0.9167 
+48: acc: 0.9338
+ 
+
+3. Compare performance both in terms of two Categorical loss functions.
+
+width = 16 neurons, layers = 2 layers, sigmoid activation, epochs = 30, learn_rate = 1, batchsize = 100,  
+
+cross-entropy: 0.9081
+quadratic:0.8581
+
+#TODO: for RELU and ELU and unbounded activations: need softmax on output layer!

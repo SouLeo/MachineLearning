@@ -8,7 +8,7 @@ class CrossEntropyLoss(object):
         return np.sum(np.nan_to_num(-y*np.log(a)-(1-y)*np.log(1-a)))
 
     @staticmethod
-    def delta(a, y):
+    def delta(active_func, z, a, y):
         return a-y
 
 

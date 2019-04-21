@@ -87,19 +87,26 @@ class FFNetwork(object):
             # print(self.weights[i].shape)
             # print(self.biases[i].shape)
             # print(activation.shape)
-            z = np.dot(self.weights[i], activation) + self.biases[i]
-            # print(z.shape)
-            z_s.append(z)
-            activation = self.activ.fn(z)  # overflows
-            activation_list.append(activation)
+            if i == len(self.biases)-1:
+                # print('hi')
+                z = np.dot(self.weights[i], activation) + self.biases[i]
+                # print(z.shape)
+                z_s.append(z)
+                activation = activationfuncs.Sigmoid.fn(z)  # overflows
+                activation_list.append(activation)
+            else:
+                z = np.dot(self.weights[i], activation) + self.biases[i]
+                # print(z.shape)
+                z_s.append(z)
+                activation = self.activ.fn(z)  # overflows
+                activation_list.append(activation)
             # print(activation.shape)
             # print(activation.max())
             # print(activation.min())
             # print(activation.shape)
 
-        # print(activation_list[2].shape)
         # backprop algo starts:
-        delta = self.cost.delta(activation_list[-1], label)
+        delta = self.cost.delta(activationfuncs.Sigmoid.fn(z), z_s[-1], activation_list[-1], label)
 
         dL_db[-1] = delta
         dL_dw[-1] = np.dot(delta, activation_list[-2].transpose())
@@ -107,8 +114,15 @@ class FFNetwork(object):
         # print(self.num_layers)
         for i in range(2, self.num_layers):
             z = z_s[-i]  # (16 by 16)
-            sp = self.activ.deriv(z)  # change to class, like cost_func
+            if i == self.num_layers-1:
+                # print(z.shape)
+                # print(z.dtype)
+                sp = activationfuncs.Sigmoid.deriv(z)
+            else:
+                sp = self.activ.deriv(z)  # change to class, like cost_func
+                print(sp)
             # watch line beneath
+
             delta = np.dot(self.weights[-i + 1].transpose(), delta) * sp
             # print(activation_list[-i - 1].shape)
             dL_db[-i] = delta
@@ -129,7 +143,10 @@ class FFNetwork(object):
 
     def evaluate(self, a):
         for i in range(len(self.biases)):
-            a = self.activ.fn(np.dot(self.weights[i], a)+self.biases[i])
+            if i == len(self.biases)-1:
+                a = activationfuncs.Sigmoid.fn(np.dot(self.weights[i], a) + self.biases[i])
+            else:
+                a = self.activ.fn(np.dot(self.weights[i], a)+self.biases[i])
         return a
 
     def test_nn(self, test_img, test_lab):
@@ -154,7 +171,7 @@ def main():
     learn_rate = 1
     mini_batch_size = 100
     cost = cost_functions.CrossEntropyLoss
-    activ = activationfuncs.Tanh
+    activ = activationfuncs.ReLu
     nn_architecture = np.array([784, 24, 24, 10])
 
     feed_forward = FFNetwork(nn_architecture, cost, activ)
